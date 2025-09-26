@@ -8,22 +8,12 @@ let currentOperator = ""
 let arr = [];
 let value = 0;
 
-
-function storeValue(num){
-    arr.push(num);
-    const result = parseFloat(arr.join(''));
-    display.innerText = result
-    value = result
-}
-
 Array.from(buttons).forEach(button => {
   button.addEventListener("click", (e) => {
     const htmlContent = e.target.innerText;
     storeValue(htmlContent)
   });
 });
-
-
 
 Array.from(operators).forEach(button => {
     button.addEventListener("click", (e) => {
@@ -36,15 +26,22 @@ Array.from(operators).forEach(button => {
       // reset for next operation
       valueOne = result;
       arr = [];
-      value = 0;
+      value = result;
     } else {
-        
+        if (valueOne !== 0 && arr.length > 0){
       // When an operator (+,-,*,/) is pressed
-      valueOne = value;
+      valueTwo = value;
+      const result = operate(valueOne, valueTwo, currentOperator);
+      valueOne = result
+      display.innerText = result
+      } else {
+        valueOne = value
+      }
+
       currentOperator = operator;
-      arr = []; // clear arr for next number
+      arr = [];
       value = 0;
-      display.innerText = "";
+      display.innerText = `${valueOne} ${currentOperator}`
     }
   });
 });
@@ -61,6 +58,13 @@ clear.addEventListener("click", () => {
   display.innerText = "";
 });
 
+
+function storeValue(num){
+    arr.push(num);
+    const result = parseFloat(arr.join(''));
+    display.innerText = result
+    value = result
+}
 
 function add (a, b){
     return a + b;
