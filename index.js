@@ -1,48 +1,65 @@
 const buttons = document.getElementsByClassName("num");
 const display = document.querySelector("h1")
 const operators = document.getElementsByClassName("op")
+
 let valueOne = 0
 let valueTwo = 0
-
+let currentOperator = ""
 let arr = [];
-let arrTwo = [];
+let value = 0;
+
+
+function storeValue(num){
+    arr.push(num);
+    const result = parseFloat(arr.join(''));
+    display.innerText = result
+    value = result
+}
 
 Array.from(buttons).forEach(button => {
   button.addEventListener("click", (e) => {
-    const htmlContent = e.target.innerText; // get the clicked button’s content
-    arr.push(htmlContent);
-    const result = parseInt(arr.join(''));
-    display.innerText = result
-    valueOne = result
-    console.log(valueOne)
+    const htmlContent = e.target.innerText;
+    storeValue(htmlContent)
   });
 });
 
-const clear = document.getElementById("clear")
-clear.addEventListener("click", () => {
-arr = [];
-display.innerText = ""
-})
+
 
 Array.from(operators).forEach(button => {
     button.addEventListener("click", (e) => {
-    const htmlContent = e.target.innerText; // get the clicked button’s content
-    display.innerText = 0 
-    arrTwo.push(htmlContent)
-    const result = parseInt(arrTwo.join(''));
-    if (htmlContent === `+`){
+    const operator = e.target.innerText; 
+    // get the clicked button’s content
+    if (operator === "="){
+    valueTwo = value
+      const result = operate(valueOne, valueTwo, currentOperator);
+      display.innerText = result;
+      // reset for next operation
+      valueOne = result;
+      arr = [];
+      value = 0;
+    } else {
         
-        // not sure on the stuff below this comment
-
-        }
-        //  above this
- 
-    });
+      // When an operator (+,-,*,/) is pressed
+      valueOne = value;
+      currentOperator = operator;
+      arr = []; // clear arr for next number
+      value = 0;
+      display.innerText = "";
+    }
+  });
 });
 
 
 
-
+const clear = document.getElementById("clear");
+clear.addEventListener("click", () => {
+  arr = [];
+  valueOne = 0;
+  valueTwo = 0;
+  value = 0;
+  currentOperator = "";
+  display.innerText = "";
+});
 
 
 function add (a, b){
@@ -58,13 +75,18 @@ function multiply (a, b){
 }
 
 function divide (a, b){
+    if (b === 0) return "Error";
     return a / b;
 }
 
-function operate (num1, num2, operator){
-    let a = num1
-    let b = num2
-    if (operator === "+"){
-        console.log(add(a, b));     
-    }
+function operate(num1, num2, operator) {
+  switch (operator) {
+    case "+": return add(num1, num2);
+    case "-": return subtract(num1, num2);
+    case "*": return multiply(num1, num2); // adjust symbol if needed
+    case "/": return divide(num1, num2);
+    default: return num2;
+  }
 }
+
+
