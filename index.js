@@ -1,12 +1,19 @@
 const buttons = document.getElementsByClassName("num");
 const display = document.querySelector("h1")
 const operators = document.getElementsByClassName("op")
+const clear = document.getElementById("clear");
+const back = document.getElementById("back")
+
 
 let valueOne = 0
 let valueTwo = 0
 let currentOperator = ""
 let arr = [];
 let value = 0;
+
+
+
+
 
 Array.from(buttons).forEach(button => {
   button.addEventListener("click", (e) => {
@@ -22,7 +29,7 @@ Array.from(operators).forEach(button => {
     if (operator === "="){
     valueTwo = value
       const result = operate(valueOne, valueTwo, currentOperator);
-      display.innerText = result;
+      updateDisplay(result);
       // reset for next operation
       valueOne = result;
       arr = [];
@@ -33,7 +40,7 @@ Array.from(operators).forEach(button => {
       valueTwo = value;
       const result = operate(valueOne, valueTwo, currentOperator);
       valueOne = result
-      display.innerText = result
+      updateDisplay(result);
       } else {
         valueOne = value
       }
@@ -47,8 +54,19 @@ Array.from(operators).forEach(button => {
 });
 
 
+back.addEventListener("click", () => {
+    arr.pop()
+    const result = parseFloat(arr.join(''));
+    if(arr.length === 0){
+        display.innerText = "";
+        value = 0;
+    } else {
+    updateDisplay(result);
+    value = result;
+    }})
 
-const clear = document.getElementById("clear");
+
+
 clear.addEventListener("click", () => {
   arr = [];
   valueOne = 0;
@@ -62,9 +80,15 @@ clear.addEventListener("click", () => {
 function storeValue(num){
     arr.push(num);
     const result = parseFloat(arr.join(''));
-    display.innerText = result
+    updateDisplay(result);
     value = result
 }
+
+function updateDisplay(num) {
+  // Round to 2 decimal places, but keep trailing zeros
+  display.innerText = num
+}
+
 
 function add (a, b){
     return a + b;
